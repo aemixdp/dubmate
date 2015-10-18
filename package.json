@@ -1,0 +1,15 @@
+{
+  "name": "dubmate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "aemxdp <aemxdp@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "pubnub": "^3.7.15",
+    "request": "^2.65.0"
+  }
+}
