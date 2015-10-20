@@ -1,34 +1,15 @@
 var CONFIG = require('./config.js');
+var DATA = require('./data.js');
+
 var request = require('request');
+var express = require('express')();
 var pubnub = require('pubnub')({
     ssl: true,
     subscribe_key: CONFIG.PUBSUB_SUBSCRIBE_KEY
 });
 
-var ROLL_VERBS = [
-    'ставь',
-    'ебашь',
-    'хуярь',
-    'лабай',
-    'замути'
-];
-
-var ROLL_GENRES = [
-    'дабстеп',
-    'гэридж',
-    'хаус',
-    'техно',
-    'трап',
-    'драмчик',
-    'к-поп',
-    'рок',
-    'панк',
-    'пост-панк',
-    'хип-хап',
-    'рэп',
-    'джаз',
-    'блюз'
-];
+var PORT = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+var IP = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 
 var cookie = '';
 
@@ -46,7 +27,10 @@ request.post('https://api.dubtrack.fm/auth/dubtrack')
 function onMessage (data) {
     switch (data.message) {
         case '!roll':
-            say(randomElem(ROLL_VERBS) + ' ' + randomElem(ROLL_GENRES));
+            say(randomElem(DATA.ROLL_VARIANTS));
+            break;
+        case '!roll genre':
+            say(randomElem(DATA.ROLL_VERBS) + ' ' + randomElem(DATA.ROLL_GENRES));
             break;
         case '!cat':
             request('http://thecatapi.com/api/images/get?format=src', function (err, res) {
@@ -94,3 +78,9 @@ function say (msg) {
 function randomElem (array) {
     return array[Math.floor(Math.random() * array.length)];
 }
+
+express.get('/', function (req, res) {
+    res.status(200).send('Ok mister :)');
+});
+
+express.listen(PORT, IP);
