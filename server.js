@@ -3,15 +3,53 @@ var DATA = require('./data.js');
 
 var request = require('request');
 var express = require('express')();
+var fs = require('fs');
+var bodyParser = require('body-parser');
+var LastFM = require('lastfmapi');
 var pubnub = require('pubnub')({
     ssl: true,
     subscribe_key: CONFIG.PUBSUB_SUBSCRIBE_KEY
 });
+var lastfm = new LastFM({
+    api_key: CONFIG.LASTFM_API_KEY
+});
 
+var INDEX_HTML = fs.readFileSync('./index.html');
 var PORT = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 var IP = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+var CMD = {
+    '!roll': function (category) {
+        switch (category) {
+            case 'genre':
+                say(randomElem(DATA.ROLL_VERBS) + ' ' +
+                    randomElem(DATA.ROLL_GENRES));
+                break;
+            default:
+                say(randomElem(DATA.ROLL_VARIANTS));
+                break;
+        }
+    },
+    '!tags': function () {
+        var artist = Array.prototype.join.call(arguments, ' ') || currentArtist;
+        if (!artist) return;
+        lastfm.artist.getTopTags({ artist: artist }, function (err, data) {
+            var tags = data.tag.map(function (item) { return item.name; });
+            if (tags.length == 0) {
+                say('Нету :(');
+            } else {
+                say(tags.join(', '));
+            }
+        });
+    },
+    '!cat': function () {
+        request('http://thecatapi.com/api/images/get?format=src', function (err, res) {
+            say(res.request.uri.href);
+        });
+    }
+};
 
 var cookie = '';
+var currentArtist = '';
 
 request.post('https://api.dubtrack.fm/auth/dubtrack')
     .form(CONFIG.CREDENTIALS)
@@ -25,18 +63,14 @@ request.post('https://api.dubtrack.fm/auth/dubtrack')
     });
 
 function onMessage (data) {
-    switch (data.message) {
-        case '!roll':
-            say(randomElem(DATA.ROLL_VARIANTS));
-            break;
-        case '!roll genre':
-            say(randomElem(DATA.ROLL_VERBS) + ' ' + randomElem(DATA.ROLL_GENRES));
-            break;
-        case '!cat':
-            request('http://thecatapi.com/api/images/get?format=src', function (err, res) {
-                say(res.request.uri.href);
-            });
-            break;
+    if (data.type == 'chat-message') {
+        var components = data.message.trim().split(/\s+/);
+        var dispatcher = CMD[components[0]];
+        if (dispatcher) {
+            dispatcher.apply(this, components.slice(1));
+        }
+    } else if (data.type == 'room_playlist-update') {
+        currentArtist = guessArtist(data.songInfo.name);
     }
 }
 
@@ -75,12 +109,55 @@ function say (msg) {
     });
 }
 
+function guessArtist (title) {
+    var sepIndex = title.indexOf(' - ');
+    if (sepIndex == -1) sepIndex = title.indexOf(' – ');
+    if (sepIndex == -1) sepIndex = title.indexOf(' _ ');
+    if (sepIndex == -1) sepIndex = title.indexOf(' | ');
+    if (sepIndex == -1) sepIndex = title.indexOf(': ');
+    if (sepIndex == -1) sepIndex = title.indexOf('. ');
+    if (sepIndex == -1) sepIndex = title.indexOf('_ ');
+    if (sepIndex == -1) sepIndex = title.indexOf('| ');
+    if (sepIndex == -1) sepIndex = title.indexOf('- ');
+    if (sepIndex == -1) sepIndex = title.indexOf('– ');
+    var artist = sepIndex == -1 ? title : title.substr(0, sepIndex);
+    return cleanBraces(artist).trim();
+}
+
+function cleanBraces (string) {
+    var newString = '';
+    var depth = 0;
+    for (var i = 0; i < string.length; ++i) {
+        var c = string.charAt(i);
+        if (c == '(' || c == '[' || c == '{') {
+            depth++;
+        } else if (c == ')' || c == ']' || c == '}') {
+            if (depth > 0) {
+                depth--;
+                continue;
+            }
+        }
+        if (depth == 0) {
+            newString += c;
+        }
+    }
+    return newString;
+}
+
 function randomElem (array) {
     return array[Math.floor(Math.random() * array.length)];
 }
 
+express.use(bodyParser.text());
+
 express.get('/', function (req, res) {
-    res.status(200).send('Ok mister :)');
+    res.setHeader("Content-Type", "text/html");
+    res.status(200).send(INDEX_HTML);
+});
+
+express.post('/say', function (req, res) {
+    say(req.body);
+    res.status(200).send('Ok!');
 });
 
 express.listen(PORT, IP);

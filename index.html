@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script>
+        $(function () {
+            var msgElem = $("#message");
+            var sayElem = $("#say");
+            sayElem.on("click", function () {
+                var msg = msgElem.val();
+                if (msg.length == 0) return;
+                $.ajax("say", {
+                    "data": msg,
+                    "type": "POST",
+                    "processData": false,
+                    "contentType": "text/plain"
+                });
+                sayElem.prop("disabled", true);
+                msgElem.prop("disabled", true);
+                document.body.style.cursor = 'wait';
+                setTimeout(function () {
+                    sayElem.prop("disabled", false);
+                    msgElem.prop("disabled", false);
+                    msgElem.val("");
+                    document.body.style.cursor = 'default';
+                }, 2000);
+            });
+        });
+    </script>
+    <style>
+        html, body { height: 100%; overflow: hidden; }
+        * { text-align: center; }
+        button { margin-top: 6px; }
+        button:enabled:hover { cursor: pointer; }
+    </style>
+</head>
+<body>
+    <input id="message" type="text" placeholder="message">
+    <br>
+    <button id="say">say</button>
+</body>
+</html>

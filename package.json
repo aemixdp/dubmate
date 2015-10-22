@@ -9,8 +9,10 @@
   "author": "aemxdp <aemxdp@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.14.1",
+    "express": "^4.13.3",
+    "lastfmapi": "0.0.6",
     "pubnub": "^3.7.15",
-    "request": "^2.65.0",
-    "express": "^4.13.3"
+    "request": "^2.65.0"
   }
 }
