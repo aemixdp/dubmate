@@ -163,7 +163,10 @@ function cleanupTitle (string) {
 }
 
 function cleanupKey (key) {
-    return key.replace(/[\.#$\[\]]/g, '').trim();
+    return key
+        .replace(/[\.#$\[\]]/g, '')
+        .replace('/', '%')
+        .trim();
 }
 
 function randomElem (array) {
@@ -193,11 +196,9 @@ function onMessage (data) {
                 var key = cleanupKey(htmlEntities.decode(
                     cleanupTitle(currentTrack).toLowerCase()));
                 db.child(key).once('value', function (snapshot) {
-                    var info = snapshot.val() || {
-                        dj: json.data.username,
-                        date: date,
-                        plays: 0
-                    };
+                    var info = snapshot.val() || { plays: 0 };
+                    info.dj = json.data.username;
+                    info.date = date;
                     info.plays += 1;
                     var params = {};
                     params[key] = info;
