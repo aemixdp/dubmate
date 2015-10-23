@@ -11,7 +11,10 @@
   "dependencies": {
     "body-parser": "^1.14.1",
     "express": "^4.13.3",
+    "firebase": "^2.3.1",
+    "html-entities": "^1.2.0",
     "lastfmapi": "0.0.6",
+    "moment": "^2.10.6",
     "pubnub": "^3.7.15",
     "request": "^2.65.0"
   }
