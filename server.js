@@ -3,7 +3,7 @@ var DATA = require('./data.js');
 
 var request = require('request');
 var express = require('express')();
-var moment = require('moment');
+var moment = require('moment-timezone');
 var fs = require('fs');
 var bodyParser = require('body-parser');
 var HtmlEntities = require('html-entities').AllHtmlEntities;
@@ -183,7 +183,7 @@ function onMessage (data) {
     } else if (data.type == 'room_playlist-update') {
         currentTrack = data.songInfo.name;
         currentArtist = guessArtist(currentTrack);
-        var date = moment().format('DD.MM.YY - HH:mm');
+        var date = moment().tz('Europe/Kiev').format('DD.MM.YY - HH:mm');
         setTimeout(function () {
             request.get({
                 url: 'https://api.dubtrack.fm/user/' + data.song.userid,

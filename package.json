@@ -15,6 +15,7 @@
     "html-entities": "^1.2.0",
     "lastfmapi": "0.0.6",
     "moment": "^2.10.6",
+    "moment-timezone": "^0.4.1",
     "pubnub": "^3.7.15",
     "request": "^2.65.0"
   }
