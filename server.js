@@ -204,6 +204,7 @@ function onMessage (data) {
         }));
     } else if (data.type == 'room_playlist-update') {
         var track = data.songInfo.name;
+        if (track == currentTrack) return;
         currentTrack = track;
         currentArtist = guessArtist(currentTrack);
         setTimeout(function () {
