@@ -174,9 +174,22 @@ function randomElem (array) {
     return array[Math.floor(Math.random() * array.length)];
 }
 
+function mkObj () {
+    var obj = arguments[arguments.length-1];
+    for (var i = arguments.length-2; i >= 0; --i) {
+        var newObj = {};
+        newObj[arguments[i]] = obj;
+        obj = newObj;
+    }
+    return obj;
+}
+
 function onMessage (data) {
+    var time = moment().tz('Europe/Kiev');
+
     if (data.type == 'chat-message') {
         var msg = data.message.trim();
+
         var sepIndex = msg.indexOf(' ');
         if (sepIndex == -1) sepIndex = msg.length;
         var cmd = msg.slice(0, sepIndex);
@@ -184,10 +197,15 @@ function onMessage (data) {
         if (dispatcher) {
             dispatcher(msg.slice(sepIndex + 1));
         }
+
+        db.update(mkObj('chatlog/' + time.format('YYYY_MM_DD') + '/' + time.format('HH_mm_ss(SSS)'), {
+            username: data.user.username,
+            message: msg
+        }));
     } else if (data.type == 'room_playlist-update') {
-        currentTrack = data.songInfo.name;
+        var track = data.songInfo.name;
+        currentTrack = track;
         currentArtist = guessArtist(currentTrack);
-        var date = moment().tz('Europe/Kiev').format('DD.MM.YY - HH:mm');
         setTimeout(function () {
             request.get({
                 url: 'https://api.dubtrack.fm/user/' + data.song.userid,
@@ -195,15 +213,19 @@ function onMessage (data) {
             }, function (err, res, body) {
                 var json = JSON.parse(body);
                 var key = cleanupKey(htmlEntities.decode(
-                    cleanupTitle(currentTrack).toLowerCase()));
+                    cleanupTitle(track).toLowerCase()));
                 db.child(key).once('value', function (snapshot) {
                     var info = snapshot.val() || { plays: 0 };
                     info.dj = json.data.username;
-                    info.date = date;
+                    info.date = time.format('DD.MM.YY - HH:mm');
                     info.plays += 1;
-                    var params = {};
-                    params[key] = info;
-                    db.update(params);
+                    if (key != 'chatlog') {
+                        db.update(mkObj(key, info));
+                    }
+                    db.update(mkObj('chatlog/' + time.format('YYYY_MM_DD') + '/' + time.format('HH_mm_ss(SSS)'), {
+                        username: json.data.username,
+                        song: key
+                    }));
                 });
             });
         }, 30000);
