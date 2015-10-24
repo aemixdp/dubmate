@@ -111,8 +111,8 @@ function say (msg) {
 }
 
 function guessArtist (title) {
+    title = cleanupTitle(title);
     var sepIndex = title.indexOf(' - ');
-    if (sepIndex == -1) sepIndex = title.indexOf(' – ');
     if (sepIndex == -1) sepIndex = title.indexOf(' _ ');
     if (sepIndex == -1) sepIndex = title.indexOf(' | ');
     if (sepIndex == -1) sepIndex = title.indexOf(': ');
@@ -120,9 +120,10 @@ function guessArtist (title) {
     if (sepIndex == -1) sepIndex = title.indexOf('_ ');
     if (sepIndex == -1) sepIndex = title.indexOf('| ');
     if (sepIndex == -1) sepIndex = title.indexOf('- ');
-    if (sepIndex == -1) sepIndex = title.indexOf('– ');
+    if (sepIndex == -1) sepIndex = title.indexOf('-');
+    if (sepIndex == -1) sepIndex = title.indexOf(' ');
     var artist = sepIndex == -1 ? title : title.substr(0, sepIndex);
-    return cutBraces(artist).trim();
+    return artist.trim();
 }
 
 function cutBraces (string) {
