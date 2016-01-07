@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block title %}messages{% endblock %}
+
+{% block body %}
+    {% include 'paginator.html' %}
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th>Username</th>
+            <th>Message</th>
+            <th>Date</th>
+        </tr>
+        {% for message in model %}
+            <tr>
+                <td>{{ message.username }}</td>
+                <td>{{ message.message }}</td>
+                <td data-datetime="{{ message.date.getTime() }}"></td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

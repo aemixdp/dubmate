@@ -1,3 +1,5 @@
 node_modules/
-config.js
+config/config.js
 sandbox.js
+oldserver.js
+.idea

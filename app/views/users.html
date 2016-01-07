@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+
+{% block title %}users{% endblock %}
+
+{% block body %}
+    {% include 'paginator.html' %}
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th>Username</th>
+            <th>Plays</th>
+            <th>First seen</th>
+            <th>Last seen</th>
+            <th>First play</th>
+            <th>Last play</th>
+        </tr>
+        {% for user in model %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.plays }}</td>
+                <td data-datetime="{{ user.firstSeen and user.firstSeen.getTime() }}"></td>
+                <td data-datetime="{{ user.lastSeen and user.lastSeen.getTime() }}"></td>
+                <td data-datetime="{{ user.firstPlay and user.firstPlay.getTime() }}"></td>
+                <td data-datetime="{{ user.lastPlay and user.lastPlay.getTime() }}"></td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

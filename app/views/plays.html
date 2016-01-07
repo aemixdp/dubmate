@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+
+{% block title %}plays{% endblock %}
+
+{% block body %}
+    {% include 'paginator.html' %}
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th>Title</th>
+            <th>Username</th>
+            <th>Date</th>
+        </tr>
+        {% for play in model %}
+            <tr>
+                <td><a href="{{ play.url }}">{{ play.title }}</a></td>
+                <td>
+                    <a href="/users/{{ play.username }}">
+                        {{ play.username }}
+                    </a>
+                </td>
+                <td data-datetime="{{ play.date.getTime() }}"></td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

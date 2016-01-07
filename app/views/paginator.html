@@ -1,0 +1,21 @@
+{% if pages %}
+<nav class="text-center">
+    <ul class="pagination">
+        <li class="{{ 'disabled' if currentPage == 1 }}">
+            <a href="{{ prevHref }}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        {% for page in pages %}
+            <li class="{{ 'active' if page.number == currentPage }}">
+                <a href="{{ page.url }}">{{ page.number }}</a>
+            </li>
+        {% endfor %}
+        <li class="{{ 'disabled' if currentPage == totalPages }}">
+            <a href="{{ nextHref }}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+{% endif %}
