@@ -11,6 +11,7 @@ import LastFM from 'lastfmapi';
 import DubtrackClient from './app/DubtrackClient';
 import * as models from './app/models';
 import config from './config/config';
+import rolls from './config/rolls';
 import setupRoutes from './config/routes';
 
 import ChatCommands from './app/plugins/ChatCommands';
@@ -72,7 +73,8 @@ const chatCommandsPlugin = new ChatCommands({
     dubtrackClient: dubtrackClient,
     soundcloudClient: soundcloud,
     youtubeClient: youtubeClient,
-    lastfmClient: lastfmClient
+    lastfmClient: lastfmClient,
+    rollVariants: rolls
 });
 
 const statsCollectorPlugin = new StatsCollector({

@@ -10,6 +10,7 @@ class ChatCommands extends EventEmitter {
         this._soundcloud = options.soundcloudClient;
         this._youtube = options.youtubeClient;
         this._lastfm = options.lastfmClient;
+        this._rolls = options.rollVariants;
     }
     run () {
         this._dubtrack.on('chat-message', this.handleChatMessage.bind(this));
@@ -57,6 +58,10 @@ ChatCommands.command('!c', [], 'get a random picture of a cat', function () {
         if (err) return this.emit('error', err);
         this._dubtrack.say(data.request.uri.href);
     });
+});
+
+ChatCommands.command('!r', [], 'roll a genre for your next track', function () {
+    this._dubtrack.say(this._rolls[Math.floor(Math.random() * this._rolls.length)]);
 });
 
 ChatCommands.command('!t', ['[artistname]'],
