@@ -9,6 +9,7 @@ import YouTube from 'youtube-node';
 import LastFM from 'lastfmapi';
 
 import DubtrackClient from './app/DubtrackClient';
+import * as tracktools from './app/tracktools';
 import * as models from './app/models';
 import config from './config/config';
 import rolls from './config/rolls';
@@ -80,7 +81,8 @@ const chatCommandsPlugin = new ChatCommands({
 const statsCollectorPlugin = new StatsCollector({
     dubtrackClient: dubtrackClient,
     soundcloudClient: soundcloud,
-    models: models
+    models: models,
+    tracktools: tracktools
 });
 
 chatCommandsPlugin.run();

@@ -7,15 +7,23 @@
     <table class="table table-bordered table-striped">
         <tr>
             <th>Title</th>
-            <th>Username</th>
+            <th>Total Plays</th>
+            <th>DJ</th>
+            <th>Previous DJ</th>
             <th>Date</th>
         </tr>
         {% for play in model %}
             <tr>
                 <td><a href="{{ play.url }}">{{ play.title }}</a></td>
+                <td>{{ play.totalPlays }}</td>
                 <td>
-                    <a href="/users/{{ play.username }}">
-                        {{ play.username }}
+                    <a href="/users/{{ play.dj }}">
+                        {{ play.dj }}
+                    </a>
+                </td>
+                <td>
+                    <a href="/users/{{ play.previousDj }}">
+                        {{ play.previousDj }}
                     </a>
                 </td>
                 <td data-datetime="{{ play.date.getTime() }}"></td>

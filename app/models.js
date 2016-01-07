@@ -8,8 +8,17 @@ const Schema = mongoose.Schema;
 const PlaySchema = new Schema({
     title: String,
     url: String,
-    username: String,
+    totalPlays: Number,
+    dj: String,
+    previousDj: String,
     date: Date
+});
+
+const TrackSchema = new Schema({
+    titlestamp: { type: String, index: true, unique: true },
+    totalPlays: Number,
+    lastDj: String,
+    lastPlay: Date
 });
 
 const UserSchema = new Schema({
@@ -32,7 +41,8 @@ UserSchema.plugin(paginate);
 MessageSchema.plugin(paginate);
 
 const Play = mongoose.model('Play', PlaySchema);
+const Track = mongoose.model('Track', TrackSchema);
 const User = mongoose.model('User', UserSchema);
 const Message = mongoose.model('Message', MessageSchema);
 
-export { Play, User, Message };
+export { Play, Track, User, Message };
