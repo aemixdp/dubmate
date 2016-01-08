@@ -1,27 +1,25 @@
 import EventEmitter from 'events';
 
 class StatsCollector extends EventEmitter {
-    constructor (options) {
+    constructor ({dubtrackClient, soundcloudClient, models, tracktools}) {
         super();
-        this._dubtrack = options.dubtrackClient;
-        this._soundcloud = options.soundcloudClient;
-        this._models = options.models;
-        this._tracktools = options.tracktools;
+        this._dubtrack = dubtrackClient;
+        this._soundcloud = soundcloudClient;
+        this._models = models;
+        this._tracktools = tracktools;
     }
     run () {
         this._dubtrack.on('chat-message', this._handleChatMessage.bind(this));
         this._dubtrack.on('track-changed', this._handleTrackChanged.bind(this));
     }
-    _handleChatMessage (username, timestamp, msg) {
-        var message = new this._models.Message({
-            username: username,
-            message: msg,
-            date: timestamp
+    _handleChatMessage ({username, timestamp, message}) {
+        var newMessage = new this._models.Message({
+            username, message, date: timestamp
         });
-        message.save(err => err && this.emit('error', err));
+        newMessage.save(err => err && this.emit('error', err));
         this._updateUserSeenInfo(username, timestamp);
     }
-    _handleTrackChanged (username, timestamp, title, originType, originId) {
+    _handleTrackChanged ({username, timestamp, title, originType, originId}) {
         var titlestamp = this._tracktools.titlestamp(title);
         this._models.Track.findOne({ titlestamp: titlestamp }, (err, trackInfo) => {
             if (err) return this.emit('error', err);
@@ -34,7 +32,7 @@ class StatsCollector extends EventEmitter {
             this._updateUserPlaybackAndSeenInfo(username, timestamp);
         });
     }
-    _updatePlays ({ username, timestamp, title, originType, originId, totalPlays, previousDj }) {
+    _updatePlays ({username, timestamp, title, originType, originId, totalPlays, previousDj}) {
         var withTrackUrlResolved;
         if (originType == 'youtube') {
             withTrackUrlResolved = (callback) =>

@@ -4,30 +4,26 @@ import EventEmitter from 'events';
 import request from 'request';
 
 class ChatCommands extends EventEmitter {
-    constructor (options) {
+    constructor ({dubtrackClient, soundcloudClient, youtubeClient, lastfmClient, rollVariants}) {
         super();
-        this._dubtrack = options.dubtrackClient;
-        this._soundcloud = options.soundcloudClient;
-        this._youtube = options.youtubeClient;
-        this._lastfm = options.lastfmClient;
-        this._rolls = options.rollVariants;
+        this._dubtrack = dubtrackClient;
+        this._soundcloud = soundcloudClient;
+        this._youtube = youtubeClient;
+        this._lastfm = lastfmClient;
+        this._rolls = rollVariants;
     }
     run () {
         this._dubtrack.on('chat-message', this.handleChatMessage.bind(this));
         this._dubtrack.on('track-changed', this.handleTrackChanged.bind(this));
     }
-    handleChatMessage (username, timestamp, message) {
+    handleChatMessage ({username, timestamp, message}) {
         if (username == this._dubtrack.username) return;
         var command = message.trim();
         if (command[0] != '!') return;
         this.process(username, timestamp, command);
     }
-    handleTrackChanged (username, timestamp, title, originType, originId) {
-        this._currentTrack = {
-            title: title,
-            originType: originType,
-            originId: originId
-        };
+    handleTrackChanged ({title, originType, originId}) {
+        this._currentTrack = {title, originType, originId};
     }
     process (username, timestamp, command) {
         var parts = command.split(/\s+/);

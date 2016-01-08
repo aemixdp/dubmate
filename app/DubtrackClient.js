@@ -5,11 +5,11 @@ import EventEmitter from 'events';
 import DubAPI from 'dubapi';
 
 class DubtrackClient extends EventEmitter {
-    constructor (options) {
+    constructor ({username, password, room}) {
         super();
-        this.username = options.username;
-        this.password = options.password;
-        this.room = options.room;
+        this.username = username;
+        this.password = password;
+        this.room = room;
     }
     login (callback) {
         new DubAPI({
@@ -22,12 +22,21 @@ class DubtrackClient extends EventEmitter {
             dubapi.on('disconnected', () => this.emit('disconnected'));
             dubapi.on('error', (err) => this.emit('error', err));
             dubapi.on(dubapi.events.chatMessage, (data) => {
-                this.emit('chat-message', data.user.username, new Date(data.time), data.message);
+                this.emit('chat-message', {
+                    username: data.user.username,
+                    timestamp: new Date(data.time),
+                    message: data.message
+                });
             });
             dubapi.on(dubapi.events.roomPlaylistUpdate, (data) => {
                 if (data.startTime != -1) return;
-                this.emit('track-changed', data.user.username, new Date(),
-                    data.media.name, data.media.type, data.media.fkid);
+                this.emit('track-changed', {
+                    username: data.user.username,
+                    timestamp: new Date(),
+                    title: data.media.name,
+                    originType: data.media.type,
+                    originId: data.media.fkid
+                });
             });
             callback();
         });
