@@ -71,14 +71,34 @@ ChatCommands.command('!r', [], 'roll a genre for your next track', function () {
     this._dubtrack.say(this._rolls[Math.floor(Math.random() * this._rolls.length)]);
 });
 
-ChatCommands.command('!p', [], 'display current track plays info', function () {
-    if (this._currentTrack) {
-        var kievDateTime = moment.tz(this._currentTrack.lastPlay, 'Europe/Kiev').format('on DD MMM YYYY [at] HH:mm:ss');
-        this._dubtrack.say(`previously played by ${this._currentTrack.lastDj} ${kievDateTime} (GMT +2)`);
-    } else {
-        this._dubtrack.say('this is first play');
+ChatCommands.command('!p', ['[tracktitle]'],
+    'display track plays info for given title, if specified, otherwise for current track',
+    function (username, timestamp, args) {
+        var title = args.join(' ');
+        var withTrackResolved;
+        if (title) {
+            withTrackResolved = (callback) => {
+                var titlestamp = this._tracktools.titlestamp(title);
+                this._models.Track.findOne({titlestamp}, (err, trackInfo) => {
+                    if (err) return this.emit('error', err);
+                    callback(trackInfo);
+                });
+            };
+        } else {
+            withTrackResolved = (callback) =>
+                callback(this._currentTrack);
+        }
+        withTrackResolved((trackInfo) => {
+            if (trackInfo) {
+                var kievDateTime = moment.tz(trackInfo.lastPlay, 'Europe/Kiev').format('on DD MMM YYYY [at] HH:mm:ss');
+                this._dubtrack.say(`previously played by ${trackInfo.lastDj} ${kievDateTime} (GMT +2), ` +
+                    `${trackInfo.totalPlays} total plays`);
+            } else {
+                this._dubtrack.say('not played before');
+            }
+        });
     }
-});
+);
 
 ChatCommands.command('!t', ['[artistname]'],
         `if artistname specified, get artist tags from lastfm,
@@ -86,7 +106,7 @@ ChatCommands.command('!t', ['[artistname]'],
     function (username, timestamp, args) {
         var artist = args[0];
         if (artist) {
-            this._lastfm.artist.getTopTags({ artist: artist }, (err, data) => {
+            this._lastfm.artist.getTopTags({artist}, (err, data) => {
                 if (err) return this.emit('error', err);
                 var tags = data.tag.map(item => item.name);
                 if (tags.length == 0) {
