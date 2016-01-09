@@ -9,14 +9,14 @@
             <ul class="nav navbar-nav">
                 <li class="divider-vertical"></li>
                 <li class="divider-vertical"></li>
-                <li><a href="/">About</a></li>
-                <li><a href="/">Links</a></li>
+                <li class="{{ 'active' if route == 'about' }}"><a href="/">About</a></li>
+                <li class="{{ 'active' if route == 'links' }}"><a href="/">Links</a></li>
                 <li class="divider-vertical"></li>
-                <li><a href="/plays">Plays</a></li>
-                <li><a href="/users">Users</a></li>
-                <li><a href="/messages">Messages</a></li>
+                <li class="{{ 'active' if route == 'plays' }}"><a href="/plays">Plays</a></li>
+                <li class="{{ 'active' if route == 'users' }}"><a href="/users">Users</a></li>
+                <li class="{{ 'active' if route == 'messages' }}"><a href="/messages">Messages</a></li>
                 <li class="divider-vertical"></li>
-                <li><a href="/commands">Commands</a></li>
+                <li class="{{ 'active' if route == 'commands' }}"><a href="/commands">Commands</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>

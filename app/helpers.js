@@ -1,16 +1,17 @@
 'use strict';
 
 import paginate from 'express-paginate';
+import extend from 'util-extend';
 import config from '../config/config.js';
 
-function paginatedListView (view, model, options) {
+function paginatedListView ({view, model, paginationOptions, renderOptions}) {
     return (req, res, next) => {
-        options.page = req.query.page;
-        options.limit = req.query.limit;
-        model.paginate({}, options, (err, result) => {
+        paginationOptions.page = req.query.page;
+        paginationOptions.limit = req.query.limit;
+        model.paginate({}, paginationOptions, (err, result) => {
             if (err) return next(err);
             var href = paginate.href(req);
-            res.render(view, {
+            extend(renderOptions, {
                 model: result.docs,
                 pages: paginate.getArrayPages(req)(
                     config.frontend.paginatorPageCount,
@@ -22,6 +23,7 @@ function paginatedListView (view, model, options) {
                 prevHref: href(true),
                 nextHref: href()
             });
+            res.render(view, renderOptions);
         });
     }
 }
