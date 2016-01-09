@@ -20,16 +20,28 @@ class StatsCollector extends EventEmitter {
         this._updateUserSeenInfo(username, timestamp);
     }
     _handleTrackChanged ({username, timestamp, title, originType, originId}) {
-        var titlestamp = this._tracktools.titlestamp(title);
-        this._models.Track.findOne({ titlestamp: titlestamp }, (err, trackInfo) => {
-            if (err) return this.emit('error', err);
-            this._updatePlays({
-                username, timestamp, title, originType, originId,
-                totalPlays: trackInfo ? trackInfo.totalPlays + 1 : 1,
-                previousDj: trackInfo && trackInfo.lastDj
+        var withPreviousTrackInfoSaved;
+        if (this._currentTrack) {
+            withPreviousTrackInfoSaved = (callback) =>
+                this._currentTrack.save(err => {
+                    if (err) return this.emit('error', err);
+                    callback();
+                });
+        } else {
+            withPreviousTrackInfoSaved = (callback) => callback();
+        }
+        withPreviousTrackInfoSaved(() => {
+            var titlestamp = this._tracktools.titlestamp(title);
+            this._models.Track.findOne({titlestamp}, (err, trackInfo) => {
+                if (err) return this.emit('error', err);
+                this._updatePlays({
+                    username, timestamp, title, originType, originId,
+                    totalPlays: trackInfo ? trackInfo.totalPlays + 1 : 1,
+                    previousDj: trackInfo && trackInfo.lastDj
+                });
+                this._updateTrackInfo(trackInfo, titlestamp, username, timestamp);
+                this._updateUserPlaybackAndSeenInfo(username, timestamp);
             });
-            this._updateTrackInfo(trackInfo, titlestamp, username, timestamp);
-            this._updateUserPlaybackAndSeenInfo(username, timestamp);
         });
     }
     _updatePlays ({username, timestamp, title, originType, originId, totalPlays, previousDj}) {
@@ -47,22 +59,19 @@ class StatsCollector extends EventEmitter {
         }
         withTrackUrlResolved(url => {
             var play = new this._models.Play({
-                title: title,
-                url: url,
-                totalPlays: totalPlays,
+                title,
+                url,
+                totalPlays,
+                previousDj,
                 dj: username,
-                previousDj: previousDj,
                 date: timestamp
             });
             play.save(err => err && this.emit('error', err));
         });
     }
     _updateTrackInfo (trackInfo, titlestamp, username, timestamp) {
-        if (this._currentTrack) {
-            this._currentTrack.save(err => err && this.emit('error', err));
-        }
         trackInfo = trackInfo || new this._models.Track({
-            titlestamp: titlestamp,
+            titlestamp,
             totalPlays: 0
         });
         trackInfo.totalPlays += 1;
@@ -71,7 +80,7 @@ class StatsCollector extends EventEmitter {
         this._currentTrack = trackInfo;
     }
     _updateUserPlaybackAndSeenInfo (username, timestamp) {
-        this._models.User.findOne({ username: username }, (err, user) => {
+        this._models.User.findOne({username}, (err, user) => {
             if (err) return this.emit('error', err);
             if (user) {
                 user.plays += 1;
@@ -82,7 +91,7 @@ class StatsCollector extends EventEmitter {
                 user.lastSeen = timestamp;
             } else {
                 user = new this._models.User({
-                    username: username,
+                    username,
                     plays: 1,
                     firstSeen: timestamp,
                     lastSeen: timestamp,
@@ -100,7 +109,7 @@ class StatsCollector extends EventEmitter {
                 user.lastSeen = timestamp;
             } else {
                 user = new this._models.User({
-                    username: username,
+                    username,
                     plays: 0,
                     firstSeen: timestamp,
                     lastSeen: timestamp,

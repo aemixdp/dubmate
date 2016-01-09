@@ -2,19 +2,26 @@
 
 import EventEmitter from 'events';
 import request from 'request';
+import moment from 'moment-timezone';
+
+const HANDLE_TRACK_CHANGED_DELAY_MS = 5000;
 
 class ChatCommands extends EventEmitter {
-    constructor ({dubtrackClient, soundcloudClient, youtubeClient, lastfmClient, rollVariants}) {
+    constructor ({dubtrackClient, soundcloudClient, youtubeClient, lastfmClient, rollVariants, models, tracktools}) {
         super();
         this._dubtrack = dubtrackClient;
         this._soundcloud = soundcloudClient;
         this._youtube = youtubeClient;
         this._lastfm = lastfmClient;
         this._rolls = rollVariants;
+        this._models = models;
+        this._tracktools = tracktools;
     }
     run () {
-        this._dubtrack.on('chat-message', this.handleChatMessage.bind(this));
-        this._dubtrack.on('track-changed', this.handleTrackChanged.bind(this));
+        this._dubtrack.on('chat-message', (data) => this.handleChatMessage(data));
+        this._dubtrack.on('track-changed', (data) => {
+            setTimeout(() => this.handleTrackChanged(data), HANDLE_TRACK_CHANGED_DELAY_MS)
+        });
     }
     handleChatMessage ({username, timestamp, message}) {
         if (username == this._dubtrack.username) return;
@@ -22,8 +29,12 @@ class ChatCommands extends EventEmitter {
         if (command[0] != '!') return;
         this.process(username, timestamp, command);
     }
-    handleTrackChanged ({title, originType, originId}) {
-        this._currentTrack = {title, originType, originId};
+    handleTrackChanged ({title}) {
+        var titlestamp = this._tracktools.titlestamp(title);
+        this._models.Track.findOne({titlestamp}, (err, trackInfo) => {
+            if (err) return this.emit('error', err);
+            this._currentTrack = trackInfo;
+        });
     }
     process (username, timestamp, command) {
         var parts = command.split(/\s+/);
@@ -58,6 +69,15 @@ ChatCommands.command('!c', [], 'get a random picture of a cat', function () {
 
 ChatCommands.command('!r', [], 'roll a genre for your next track', function () {
     this._dubtrack.say(this._rolls[Math.floor(Math.random() * this._rolls.length)]);
+});
+
+ChatCommands.command('!p', [], 'display current track plays info', function () {
+    if (this._currentTrack) {
+        var kievDateTime = moment.tz(this._currentTrack.lastPlay, 'Europe/Kiev').format('on DD MMM YYYY [at] HH:mm:ss');
+        this._dubtrack.say(`previously played by ${this._currentTrack.lastDj} ${kievDateTime} (GMT +2)`);
+    } else {
+        this._dubtrack.say('this is first play');
+    }
 });
 
 ChatCommands.command('!t', ['[artistname]'],

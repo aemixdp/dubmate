@@ -75,7 +75,9 @@ const chatCommandsPlugin = new ChatCommands({
     soundcloudClient: soundcloud,
     youtubeClient: youtubeClient,
     lastfmClient: lastfmClient,
-    rollVariants: rolls
+    rollVariants: rolls,
+    models: models,
+    tracktools: tracktools
 });
 
 const statsCollectorPlugin = new StatsCollector({
