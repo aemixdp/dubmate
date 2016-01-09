@@ -18,25 +18,25 @@ class ChatCommands extends EventEmitter {
         this._tracktools = tracktools;
     }
     run () {
-        this._dubtrack.on('chat-message', (data) => this.handleChatMessage(data));
+        this._dubtrack.on('chat-message', (data) => this._handleChatMessage(data));
         this._dubtrack.on('track-changed', (data) => {
-            setTimeout(() => this.handleTrackChanged(data), HANDLE_TRACK_CHANGED_DELAY_MS)
+            setTimeout(() => this._handleTrackChanged(data), HANDLE_TRACK_CHANGED_DELAY_MS)
         });
     }
-    handleChatMessage ({username, timestamp, message}) {
+    _handleChatMessage ({username, timestamp, message}) {
         if (username == this._dubtrack.username) return;
         var command = message.trim();
         if (command[0] != '!') return;
-        this.process(username, timestamp, command);
+        this._process(username, timestamp, command);
     }
-    handleTrackChanged ({title}) {
+    _handleTrackChanged ({title}) {
         var titlestamp = this._tracktools.titlestamp(title);
         this._models.Track.findOne({titlestamp}, (err, trackInfo) => {
             if (err) return this.emit('error', err);
             this._currentTrack = trackInfo;
         });
     }
-    process (username, timestamp, command) {
+    _process (username, timestamp, command) {
         var parts = command.split(/\s+/);
         var commandName = parts[0];
         var commandArgs = parts.slice(1);
