@@ -6,9 +6,9 @@
     {% include 'paginator.html' %}
     <table class="table table-bordered table-striped">
         <tr>
-            <th>Username</th>
-            <th>Message</th>
-            <th>Date</th>
+            <th>{{ localize('Username') }}</th>
+            <th>{{ localize('Message') }}</th>
+            <th>{{ localize('Date') }}</th>
         </tr>
         {% for message in model %}
             <tr>

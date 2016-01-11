@@ -101,8 +101,8 @@ ChatCommands.command('!p', ['[tracktitle]'],
 );
 
 ChatCommands.command('!t', ['[artistname]'],
-        `if artistname specified, get artist tags from lastfm,
-        otherwise get current track tags from youtube/soundcloud`,
+        'if artistname specified, get artist tags from lastfm, ' +
+        'otherwise get current track tags from youtube/soundcloud',
     function (username, timestamp, args) {
         var artist = args[0];
         if (artist) {

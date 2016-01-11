@@ -6,12 +6,12 @@
     {% include 'paginator.html' %}
     <table class="table table-bordered table-striped">
         <tr>
-            <th>Username</th>
-            <th>Plays</th>
-            <th>First seen</th>
-            <th>Last seen</th>
-            <th>First play</th>
-            <th>Last play</th>
+            <th>{{ localize('Username') }}</th>
+            <th>{{ localize('Plays') }}</th>
+            <th>{{ localize('First seen') }}</th>
+            <th>{{ localize('Last seen') }}</th>
+            <th>{{ localize('First play') }}</th>
+            <th>{{ localize('Last play') }}</th>
         </tr>
         {% for user in model %}
             <tr>

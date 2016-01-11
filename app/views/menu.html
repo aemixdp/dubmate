@@ -9,16 +9,34 @@
             <ul class="nav navbar-nav">
                 <li class="divider-vertical"></li>
                 <li class="divider-vertical"></li>
-                <li class="{{ 'active' if route == 'about' }}"><a href="/">About</a></li>
-                <li class="{{ 'active' if route == 'links' }}"><a href="/">Links</a></li>
+                <li class="{{ 'active' if route == 'about' }}">
+                    <a href="/">{{ localize('About') }}</a>
+                </li>
+                <li class="{{ 'active' if route == 'links' }}">
+                    <a href="/">{{ localize('Links') }}</a>
+                </li>
                 <li class="divider-vertical"></li>
-                <li class="{{ 'active' if route == 'plays' }}"><a href="/plays">Plays</a></li>
-                <li class="{{ 'active' if route == 'users' }}"><a href="/users">Users</a></li>
-                <li class="{{ 'active' if route == 'messages' }}"><a href="/messages">Messages</a></li>
+                <li class="{{ 'active' if route == 'plays' }}">
+                    <a href="/plays">{{ localize('Playlist') }}</a>
+                </li>
+                <li class="{{ 'active' if route == 'users' }}">
+                    <a href="/users">{{ localize('Users') }}</a>
+                </li>
+                <li class="{{ 'active' if route == 'messages' }}">
+                    <a href="/messages">{{ localize('Messages') }}</a>
+                </li>
                 <li class="divider-vertical"></li>
-                <li class="{{ 'active' if route == 'commands' }}"><a href="/commands">Commands</a></li>
+                <li class="{{ 'active' if route == 'commands' }}">
+                    <a href="/commands">{{ localize('Commands') }}</a>
+                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                <li class="{{ 'active' if locale == 'ru' }}">
+                    <a href="#" onclick="setLocale('ru')">{{ localize('ru') }}</a>
+                </li>
+                <li class="{{ 'active' if locale == 'en' }}">
+                    <a href="#" onclick="setLocale('en')">{{ localize('en') }}</a>
+                </li>
                 <li>
                     <a href="https://github.com/aemxdp/dubmate">
                         <i class="fa fa-github fa-lg"></i>

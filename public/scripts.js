@@ -10,3 +10,8 @@ $(function () {
         $(this).html(localDate.toLocaleString());
     });
 });
+
+function setLocale (locale) {
+    document.cookie = 'locale=' + locale + '; path=/';
+    document.location.reload(true);
+}

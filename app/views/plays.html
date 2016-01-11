@@ -6,11 +6,11 @@
     {% include 'paginator.html' %}
     <table class="table table-bordered table-striped">
         <tr>
-            <th>Title</th>
-            <th>Total Plays</th>
-            <th>DJ</th>
-            <th>Previous DJ</th>
-            <th>Date</th>
+            <th>{{ localize('Title') }}</th>
+            <th>{{ localize('Total plays') }}</th>
+            <th>{{ localize('DJ') }}</th>
+            <th>{{ localize('Previous DJ') }}</th>
+            <th>{{ localize('Date') }}</th>
         </tr>
         {% for play in model %}
             <tr>

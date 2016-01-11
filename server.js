@@ -2,6 +2,7 @@
 
 import path from 'path';
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import nunjucks from 'nunjucks';
 import soundcloud from 'node-soundcloud';
@@ -14,6 +15,7 @@ import * as models from './app/models';
 import config from './config/config';
 import rolls from './config/rolls';
 import setupRoutes from './config/routes';
+import localizer from './config/localization';
 
 import ChatCommands from './app/plugins/ChatCommands';
 import StatsCollector from './app/plugins/StatsCollector';
@@ -38,7 +40,15 @@ soundcloud.init({
 const expressApp = express();
 
 expressApp.set('view engine', 'html');
+expressApp.use(cookieParser());
 expressApp.use(express.static(path.join(__dirname, 'public')));
+
+expressApp.use((req, res, next) => {
+    var locale = req.cookies.locale || 'ru';
+    res.locals.locale = locale;
+    res.locals.localize = localizer(locale);
+    next();
+});
 
 setupRoutes(expressApp);
 

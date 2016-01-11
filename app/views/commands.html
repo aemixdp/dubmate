@@ -5,13 +5,13 @@
 {% block body %}
   <table class="table table-bordered table-striped">
     <tr>
-      <th>Command</th>
-      <th>Description</th>
+      <th>{{ localize('Command') }}</th>
+      <th>{{ localize('Description') }}</th>
     </tr>
     {% for entry in chatCommandRegistry %}
       <tr>
         <td>{{ entry.name }} {{ entry.args.join(' ') }}</td>
-        <td>{{ entry.description }}</td>
+        <td>{{ localize(entry.description) }}</td>
       </tr>
     {% endfor %}
   </table>
