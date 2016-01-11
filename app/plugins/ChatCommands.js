@@ -154,4 +154,16 @@ ChatCommands.command('!t', ['[artistname]'],
     }
 );
 
+ChatCommands.command('!l', [], "get link to current track's origin (most useful for soundcloud)", function () {
+    var trackInfo = this._dubtrack.getTrackInfo();
+    if (trackInfo.originType == 'soundcloud') {
+        this._soundcloud.get(`/tracks/${trackInfo.originId}`, (err, data) => {
+            if (err) return this.emit('error', err);
+            this._dubtrack.say(data.permalink_url);
+        });
+    } else if (trackInfo.originType == 'youtube') {
+        this._dubtrack.say(`https://www.youtube.com/watch?v=${trackInfo.originId}`);
+    }
+});
+
 export default ChatCommands;

@@ -47,6 +47,17 @@ class DubtrackClient extends EventEmitter {
     say (message) {
         this._dubapi.sendChat(message);
     }
+    getTrackInfo () {
+        var media = this._dubapi.getMedia();
+        var dj = this._dubapi.getDJ();
+        return media && {
+            username: dj.username,
+            timestamp: new Date(media.created),
+            title: media.name,
+            originType: media.type,
+            originId: media.fkid
+        };
+    }
 }
 
 export default DubtrackClient;
