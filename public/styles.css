@@ -41,3 +41,7 @@ body {
 [data-datetime] {
     min-width: 200px;
 }
+
+.navbar {
+    border-radius: 0;
+}
