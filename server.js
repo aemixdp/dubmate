@@ -88,7 +88,8 @@ const chatCommandsPlugin = new ChatCommands({
     lastfmClient: lastfmClient,
     rollVariants: rolls,
     models: models,
-    tracktools: tracktools
+    tracktools: tracktools,
+    localizer: localizer(config.chatbotLocale)
 });
 
 const chatStopWordsPlugin = new ChatStopWords({
@@ -102,6 +103,10 @@ const statsCollectorPlugin = new StatsCollector({
     models: models,
     tracktools: tracktools
 });
+
+chatCommandsPlugin.on('error', console.error);
+chatStopWordsPlugin.on('error', console.error);
+statsCollectorPlugin.on('error', console.error);
 
 chatCommandsPlugin.run();
 chatStopWordsPlugin.run();

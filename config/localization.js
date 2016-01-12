@@ -21,12 +21,14 @@ const ru = {
     'Last play': 'Последний диджеинг',
     'ru': 'рус',
     'en': 'англ',
+    'no tags': 'нет тэгов',
+    'artist not found': 'артист не найден',
     'get a random picture of a cat': 'получить случайную пикчу кота',
     'roll a genre for your next track': 'ролльнуть жанр для следующего трека',
     'display track plays info for given title, if specified, otherwise for current track':
         'показать информацию о воспроизведениях для указанного либо текущего трека',
-    'if artistname specified, get artist tags from lastfm, otherwise get current track tags from youtube/soundcloud':
-        'если имя артиста указано, получить теги с ластика, иначе получить теги текущего трека с youtube/soundcloud',
+    'if artistname specified, get artist tags from lastfm, otherwise get current track tags from youtube/soundcloud and lastfm':
+        'если имя артиста указано, получить теги с ластика, иначе получить теги текущего трека с youtube/soundcloud и ластика',
     'get link to current track\'s origin (most useful for soundcloud)':
         'получить ссылку на текущий трек на его исходном ресурсе (особенно полезно для soundcloud)'
 };

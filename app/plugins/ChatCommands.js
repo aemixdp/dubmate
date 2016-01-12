@@ -7,7 +7,10 @@ import moment from 'moment-timezone';
 const HANDLE_TRACK_CHANGED_DELAY_MS = 5000;
 
 class ChatCommands extends EventEmitter {
-    constructor ({dubtrackClient, soundcloudClient, youtubeClient, lastfmClient, rollVariants, models, tracktools}) {
+    constructor ({
+        dubtrackClient, soundcloudClient, youtubeClient, lastfmClient,
+        rollVariants, models, tracktools, localizer
+    }) {
         super();
         this._dubtrack = dubtrackClient;
         this._soundcloud = soundcloudClient;
@@ -16,6 +19,7 @@ class ChatCommands extends EventEmitter {
         this._rolls = rollVariants;
         this._models = models;
         this._tracktools = tracktools;
+        this._localize = localizer;
     }
     run () {
         this._dubtrack.on('chat-message', (data) => this._handleChatMessage(data));
@@ -102,23 +106,25 @@ ChatCommands.command('!p', ['[tracktitle]'],
 
 ChatCommands.command('!t', ['[artistname]'],
         'if artistname specified, get artist tags from lastfm, ' +
-        'otherwise get current track tags from youtube/soundcloud',
+        'otherwise get current track tags from youtube/soundcloud and lastfm',
     function (username, timestamp, args) {
-        var artist = args[0];
-        if (artist) {
-            this._lastfm.artist.getTopTags({artist}, (err, data) => {
+        var noTags = this._localize('no tags');
+        var trackInfo = this._dubtrack.getTrackInfo();
+        var artist = args[0] || (trackInfo && this._tracktools.guessArtist(trackInfo.title));
+        if (!artist) return;
+        this._lastfm.artist.getTopTags({artist}, (err, data) => {
+            if (err && err.error == 6) {
+                this._dubtrack.say('lastfm: ' + this._localize('artist not found'));
+            } else {
                 if (err) return this.emit('error', err);
                 var tags = data.tag.map(item => item.name);
-                if (tags.length == 0) {
-                    this._dubtrack.say('Sadly, nothing found');
-                } else {
-                    this._dubtrack.say(tags.join(', '));
-                }
-            });
-        } else if (this._currentTrack) {
-            var originType = this._currentTrack.originType;
+                this._dubtrack.say('lastfm: ' + (tags.join(', ') || noTags));
+            }
+        });
+        if (!args[0] && trackInfo) {
+            var originType = trackInfo.originType;
             if (originType == 'soundcloud') {
-                this._soundcloud.get(`/tracks/${this._currentTrack.originId}`, (err, data) => {
+                this._soundcloud.get(`/tracks/${trackInfo.originId}`, (err, data) => {
                     if (err) return this.emit('error', err);
                     var tagWords = data.tag_list.split(' ');
                     var tags = [];
@@ -142,12 +148,13 @@ ChatCommands.command('!t', ['[artistname]'],
                             tags.push(tagWord);
                         }
                     }
-                    this._dubtrack.say(tags.join(', '));
+                    this._dubtrack.say('soundcloud: ' + (tags.join(', ') || noTags));
                 });
             } else if (originType == 'youtube') {
-                this._youtube.getById(this._currentTrack.originId, (err, data) => {
+                this._youtube.getById(trackInfo.originId, (err, data) => {
                     if (err) return this.emit('error', err);
-                    this._dubtrack.say(data.items[0].snippet.tags.join(', '));
+                    var tags = data.items[0].snippet.tags || [];
+                    this._dubtrack.say('youtube: ' + (tags.join(', ') || noTags));
                 });
             }
         }
