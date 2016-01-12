@@ -64,7 +64,7 @@ nunjucksEnv.addGlobal('chatCommandRegistry', ChatCommands.registry);
 const mongooseConnectionOptions = { server: { socketOptions: { keepAlive: 1 } } };
 const mongooseConnection = mongoose.connect(config.db, mongooseConnectionOptions).connection;
 
-mongooseConnection.on('error', console.log);
+mongooseConnection.on('error', console.error);
 mongooseConnection.on('disconnected', () =>
     mongoose.connect(config.db, mongooseConnectionOptions));
 
@@ -81,6 +81,8 @@ dubtrackClient.on('connected', () =>
 dubtrackClient.on('disconnected', () =>
     setTimeout(() => dubtrackClient.connect(), config.dubtrack.reconnectTimeout));
 
+dubtrackClient.on('error', console.error);
+
 const chatCommandsPlugin = new ChatCommands({
     dubtrackClient: dubtrackClient,
     soundcloudClient: soundcloud,
@@ -89,7 +91,8 @@ const chatCommandsPlugin = new ChatCommands({
     rollVariants: rolls,
     models: models,
     tracktools: tracktools,
-    localizer: localizer(config.chatbotLocale)
+    localizer: localizer(config.chatbotLocale),
+    maxChatCommandsPerMinute: config.maxChatCommandsPerMinute
 });
 
 const chatStopWordsPlugin = new ChatStopWords({

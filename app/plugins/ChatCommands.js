@@ -9,7 +9,7 @@ const HANDLE_TRACK_CHANGED_DELAY_MS = 5000;
 class ChatCommands extends EventEmitter {
     constructor ({
         dubtrackClient, soundcloudClient, youtubeClient, lastfmClient,
-        rollVariants, models, tracktools, localizer
+        rollVariants, models, tracktools, localizer, maxChatCommandsPerMinute
     }) {
         super();
         this._dubtrack = dubtrackClient;
@@ -20,6 +20,8 @@ class ChatCommands extends EventEmitter {
         this._models = models;
         this._tracktools = tracktools;
         this._localize = localizer;
+        this._maxChatCommandsPerMinute = maxChatCommandsPerMinute;
+        this._commandInvocationsCache = {};
     }
     run () {
         this._dubtrack.on('chat-message', (data) => this._handleChatMessage(data));
@@ -27,7 +29,11 @@ class ChatCommands extends EventEmitter {
             setTimeout(() => this._handleTrackChanged(data), HANDLE_TRACK_CHANGED_DELAY_MS)
         });
     }
-    _handleChatMessage ({username, timestamp, message}) {
+    _handleChatMessage ({username, timestamp, message, id}) {
+        if (this._lastMessageUsername != username) {
+            this._lastMessageGroupId = id;
+            this._lastMessageUsername = username;
+        }
         if (username == this._dubtrack.username) return;
         var command = message.trim();
         if (command[0] != '!') return;
@@ -45,9 +51,28 @@ class ChatCommands extends EventEmitter {
         var commandName = parts[0];
         var commandArgs = parts.slice(1);
         var processor = ChatCommands._commandHandlers.get(commandName);
-        this.emit('command', commandName, commandArgs, processor ? true : false);
         if (processor) {
-            processor.call(this, username, timestamp, commandArgs);
+            var userCommandInvocationsCache = this._commandInvocationsCache[username] || [];
+            userCommandInvocationsCache = userCommandInvocationsCache.filter((otherTimestamp) =>
+                moment(timestamp).diff(moment(otherTimestamp), 'seconds') < 60);
+            if (userCommandInvocationsCache.length < this._maxChatCommandsPerMinute) {
+                processor.call(this, username, timestamp, commandArgs);
+                userCommandInvocationsCache.push(timestamp);
+            } else {
+                var secondsFromLastLimitMessage = this._lastLimitMessageTimestamp &&
+                    moment(timestamp).diff(moment(this._lastLimitMessageTimestamp), 'seconds');
+                if (secondsFromLastLimitMessage && secondsFromLastLimitMessage < 60) {
+                    this._dubtrack.deleteChatMessage(this._lastMessageGroupId);
+                } else {
+                    var response =
+                        this._localize('Sorry') + `, ${username}, ` +
+                        this._localize('you reached your commands-per-minute limit') + ' (' +
+                        this._maxChatCommandsPerMinute + ')';
+                    this._dubtrack.say(response);
+                    this._lastLimitMessageTimestamp = timestamp;
+                }
+            }
+            this._commandInvocationsCache[username] = userCommandInvocationsCache;
         }
     }
 }
