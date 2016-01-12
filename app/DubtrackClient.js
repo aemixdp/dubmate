@@ -25,7 +25,8 @@ class DubtrackClient extends EventEmitter {
                 this.emit('chat-message', {
                     username: data.user.username,
                     timestamp: new Date(data.time),
-                    message: data.message
+                    message: data.message,
+                    id: data.id
                 });
             });
             dubapi.on(dubapi.events.roomPlaylistUpdate, (data) => {
@@ -57,6 +58,9 @@ class DubtrackClient extends EventEmitter {
             originType: media.type,
             originId: media.fkid
         };
+    }
+    deleteChatMessage (messageId) {
+        this._dubapi.moderateDeleteChat(messageId);
     }
 }
 

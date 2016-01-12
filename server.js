@@ -18,6 +18,7 @@ import setupRoutes from './config/routes';
 import localizer from './config/localization';
 
 import ChatCommands from './app/plugins/ChatCommands';
+import ChatStopWords from './app/plugins/ChatStopWords';
 import StatsCollector from './app/plugins/StatsCollector';
 
 const dubtrackClient = new DubtrackClient({
@@ -90,6 +91,11 @@ const chatCommandsPlugin = new ChatCommands({
     tracktools: tracktools
 });
 
+const chatStopWordsPlugin = new ChatStopWords({
+    client: dubtrackClient,
+    stopWords: config.chatStopWords
+});
+
 const statsCollectorPlugin = new StatsCollector({
     dubtrackClient: dubtrackClient,
     soundcloudClient: soundcloud,
@@ -98,4 +104,5 @@ const statsCollectorPlugin = new StatsCollector({
 });
 
 chatCommandsPlugin.run();
+chatStopWordsPlugin.run();
 statsCollectorPlugin.run();
