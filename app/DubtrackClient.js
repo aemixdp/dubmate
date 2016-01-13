@@ -1,10 +1,10 @@
 'use strict';
 
 import util from 'util';
-import EventEmitter from 'events';
+import events from 'events';
 import DubAPI from 'dubapi';
 
-class DubtrackClient extends EventEmitter {
+class DubtrackClient extends events.EventEmitter {
     constructor ({username, password, room}) {
         super();
         this.username = username;

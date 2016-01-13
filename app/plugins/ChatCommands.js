@@ -1,12 +1,12 @@
 'use strict';
 
-import EventEmitter from 'events';
+import events from 'events';
 import request from 'request';
 import moment from 'moment-timezone';
 
 const HANDLE_TRACK_CHANGED_DELAY_MS = 5000;
 
-class ChatCommands extends EventEmitter {
+class ChatCommands extends events.EventEmitter {
     constructor ({
         dubtrackClient, soundcloudClient, youtubeClient, lastfmClient,
         rollVariants, models, tracktools, localizer, maxChatCommandsPerMinute

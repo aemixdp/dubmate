@@ -1,6 +1,6 @@
-import EventEmitter from 'events';
+import events from 'events';
 
-class ChatStopWords extends EventEmitter {
+class ChatStopWords extends events.EventEmitter {
     constructor ({client, stopWords}) {
         super();
         this._client = client;

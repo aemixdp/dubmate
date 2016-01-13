@@ -1,6 +1,6 @@
-import EventEmitter from 'events';
+import events from 'events';
 
-class StatsCollector extends EventEmitter {
+class StatsCollector extends events.EventEmitter {
     constructor ({dubtrackClient, soundcloudClient, models, tracktools}) {
         super();
         this._dubtrack = dubtrackClient;
