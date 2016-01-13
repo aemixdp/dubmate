@@ -122,7 +122,7 @@ ChatCommands.command('!p', ['[tracktitle]'],
                 this._dubtrack.say(`previously played by ${trackInfo.lastDj} ${kievDateTime} (GMT +2), ` +
                     `${trackInfo.totalPlays} total plays`);
             } else {
-                this._dubtrack.say('not played before');
+                this._dubtrack.say(this._localize('not played before'));
             }
         });
     }

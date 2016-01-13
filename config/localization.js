@@ -21,6 +21,7 @@ const ru = {
     'Last play': 'Последний диджеинг',
     'ru': 'рус',
     'en': 'англ',
+    'not played before': 'ранее не игралось',
     'Sorry': 'Извини',
     'you reached your commands-per-minute limit': 'ты достиг предела комманд в минуту',
     'no tags': 'нет тэгов',
