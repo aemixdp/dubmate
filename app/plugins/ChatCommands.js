@@ -66,8 +66,7 @@ class ChatCommands extends EventEmitter {
                 } else {
                     var response =
                         this._localize('Sorry') + `, ${username}, ` +
-                        this._localize('you reached your commands-per-minute limit') + ' (' +
-                        this._maxChatCommandsPerMinute + ')';
+                        this._localize('you reached your commands-per-minute limit');
                     this._dubtrack.say(response);
                     this._lastLimitMessageTimestamp = timestamp;
                 }

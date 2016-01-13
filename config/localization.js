@@ -22,7 +22,7 @@ const ru = {
     'ru': 'рус',
     'en': 'англ',
     'Sorry': 'Извини',
-    'you reached your commands-per-minute limit': 'ты достиг своего предела комманд в минуту',
+    'you reached your commands-per-minute limit': 'ты достиг предела комманд в минуту',
     'no tags': 'нет тэгов',
     'artist not found': 'артист не найден',
     'get a random picture of a cat': 'получить случайную пикчу кота',
