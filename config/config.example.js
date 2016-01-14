@@ -14,5 +14,12 @@ export default {
     },
     lastfmApiKey: '3248928u982uf832fu3298fu2',
     soundcloudClientId: '93j2r09f3j902jf39fj2930fj2jf',
-    googleApiKey: 'ADqdwQDWdfd3f2432-FSDSFsdfsdf-fsDFxcvx32r'
+    googleApiKey: 'ADqdwQDWdfd3f2432-FSDSFsdfsdf-fsDFxcvx32r',
+    chatbotLocale: 'ru',
+    chatStopWords: [
+        '2ch.hk',
+        '4chan.org'
+    ],
+    maxChatCommandsPerMinute: 5,
+    maxTrackDurationAllowed: 900000
 };
