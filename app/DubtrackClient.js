@@ -36,7 +36,8 @@ class DubtrackClient extends events.EventEmitter {
                     timestamp: new Date(),
                     title: data.media.name,
                     originType: data.media.type,
-                    originId: data.media.fkid
+                    originId: data.media.fkid,
+                    duration: data.media.songLength
                 });
             });
             callback();
@@ -61,6 +62,9 @@ class DubtrackClient extends events.EventEmitter {
     }
     deleteChatMessage (messageId) {
         this._dubapi.moderateDeleteChat(messageId);
+    }
+    skipTrack () {
+        this._dubapi.moderateSkip();
     }
 }
 
