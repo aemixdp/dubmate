@@ -102,29 +102,56 @@ ChatCommands.command('!r', [], 'roll a genre for your next track', function () {
 ChatCommands.command('!p', ['[tracktitle]'],
     'display track plays info for given title, if specified, otherwise for current track',
     function (username, timestamp, args) {
-        var title = args.join(' ');
-        var withTrackResolved;
-        if (title) {
-            withTrackResolved = (callback) => {
-                var titlestamp = this._tracktools.titlestamp(title);
-                this._models.Track.findOne({titlestamp}, (err, trackInfo) => {
-                    if (err) return this.emit('error', err);
-                    callback(trackInfo);
-                });
-            };
-        } else {
-            withTrackResolved = (callback) =>
-                callback(this._currentTrack);
-        }
-        withTrackResolved((trackInfo) => {
+        var trackInfo = this._dubtrack.getTrackInfo();
+        var title = args.join(' ') || (trackInfo && trackInfo.title);
+        if (!title) return;
+        var titlestamp = this._tracktools.titlestamp(title);
+        this._models.Track.findOne({titlestamp}, (err, trackInfo) => {
+            if (err) return this.emit('error', err);
             if (trackInfo) {
                 var kievDateTime = moment.tz(trackInfo.lastPlay, 'Europe/Kiev').format('on DD MMM YYYY [at] HH:mm:ss');
-                this._dubtrack.say(`previously played by ${trackInfo.lastDj} ${kievDateTime} (GMT +2), ` +
-                    `${trackInfo.totalPlays} total plays`);
+                this._dubtrack.say(
+                    this._localize('previously played by') +
+                    ` ${trackInfo.lastDj} ${kievDateTime} (GMT +2), ` +
+                    this._localize('total plays') + ':' +
+                    ` ${trackInfo.totalPlays}`);
             } else {
                 this._dubtrack.say(this._localize('not played before'));
             }
         });
+
+
+
+        //var withTrackResolved;
+        //if (title) {
+        //    withTrackResolved = (callback) => {
+        //        var titlestamp = this._tracktools.titlestamp(title);
+        //        this._models.Track.findOne({titlestamp}, (err, trackInfo) => {
+        //            if (err) return this.emit('error', err);
+        //            callback(trackInfo);
+        //        });
+        //    };
+        //} else {
+        //    withTrackResolved = (callback) => {
+        //        var trackInfo = this._dubtrack.getTrackInfo();
+        //        callback({
+        //            lastDj: trackInfo.username,
+        //            lastPlay: trackInfo
+        //        });
+        //    };
+        //}
+        //withTrackResolved((trackInfo) => {
+        //    if (trackInfo) {
+        //        var kievDateTime = moment.tz(trackInfo.lastPlay, 'Europe/Kiev').format('on DD MMM YYYY [at] HH:mm:ss');
+        //        this._dubtrack.say(
+        //            this._localize('previously played by') +
+        //            ` ${trackInfo.lastDj} ${kievDateTime} (GMT +2),` +
+        //            this._localize('total plays') + ':' +
+        //            ` ${trackInfo.totalPlays}`);
+        //    } else {
+        //        this._dubtrack.say(this._localize('not played before'));
+        //    }
+        //});
     }
 );
 
