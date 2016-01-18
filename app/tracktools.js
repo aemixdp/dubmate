@@ -13,10 +13,15 @@ function cutBraces (string) {
 }
 
 function titlestamp (title) {
-    return cutBraces(title)
-        .replace(/[^a-zA-Z]+/g, '')
-        .toLowerCase()
-        .replace('feat', 'ft');
+    title = cutBraces(title).toLowerCase();
+    var result = '';
+    for (var char of title) {
+        if (char != char.toUpperCase()) {
+            result += char;
+        }
+    }
+    result = result.replace('feat', 'ft');
+    return result.length > 3 ? result : title;
 }
 
 function guessArtist (title) {
@@ -34,4 +39,4 @@ function guessArtist (title) {
     return artist.trim();
 }
 
-export { cutBraces, titlestamp, guessArtist };
+export {cutBraces, titlestamp, guessArtist};

@@ -33,6 +33,11 @@ describe('tracktools', () => {
             assert.equal(
                 titlestamp('Mungo\'s Hi-Fi (Feat Charlie P) - Rules Of The Dance (Kahn Remix)'),
                 titlestamp('Mungos HIFI Rules of the Dance'));
+            assert.equal(titlestamp('효린X범키X주영').length, 8);
+            assert.equal(
+                titlestamp('[MV] 효린X범키X주영_ Love Line (Hyolyn, Bumkey, Jooyoung)'),
+                titlestamp('효린X범키X주영 - Love Line'));
+            assert.equal(titlestamp('PHARAOH-СКВИРТ В ЛИЦО').length, 18);
         });
     });
 });
