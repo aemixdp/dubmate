@@ -119,39 +119,6 @@ ChatCommands.command('!p', ['[tracktitle]'],
                 this._dubtrack.say(this._localize('not played before'));
             }
         });
-
-
-
-        //var withTrackResolved;
-        //if (title) {
-        //    withTrackResolved = (callback) => {
-        //        var titlestamp = this._tracktools.titlestamp(title);
-        //        this._models.Track.findOne({titlestamp}, (err, trackInfo) => {
-        //            if (err) return this.emit('error', err);
-        //            callback(trackInfo);
-        //        });
-        //    };
-        //} else {
-        //    withTrackResolved = (callback) => {
-        //        var trackInfo = this._dubtrack.getTrackInfo();
-        //        callback({
-        //            lastDj: trackInfo.username,
-        //            lastPlay: trackInfo
-        //        });
-        //    };
-        //}
-        //withTrackResolved((trackInfo) => {
-        //    if (trackInfo) {
-        //        var kievDateTime = moment.tz(trackInfo.lastPlay, 'Europe/Kiev').format('on DD MMM YYYY [at] HH:mm:ss');
-        //        this._dubtrack.say(
-        //            this._localize('previously played by') +
-        //            ` ${trackInfo.lastDj} ${kievDateTime} (GMT +2),` +
-        //            this._localize('total plays') + ':' +
-        //            ` ${trackInfo.totalPlays}`);
-        //    } else {
-        //        this._dubtrack.say(this._localize('not played before'));
-        //    }
-        //});
     }
 );
 
