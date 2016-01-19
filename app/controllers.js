@@ -12,7 +12,7 @@ const plays = {
     list: (req, res, next) => {
         var query = {};
         if (req.query.user) {
-            query.username = req.query.user;
+            query.dj = req.query.user;
         }
         helpers.paginatedListView({
             view: 'plays',
