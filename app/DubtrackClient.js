@@ -30,7 +30,6 @@ class DubtrackClient extends events.EventEmitter {
                 });
             });
             dubapi.on(dubapi.events.roomPlaylistUpdate, (data) => {
-                if (data.startTime != -1) return;
                 this.emit('track-changed', {
                     username: data.user.username,
                     timestamp: new Date(),
