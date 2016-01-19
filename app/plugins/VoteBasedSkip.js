@@ -24,14 +24,18 @@ class VoteBasedSkip {
                 neutrals: this._neutrals.size
             });
             if (shouldBeSkipped) {
-                this._skipTask = setTimeout(
+                this._skipTask = this._skipTask || setTimeout(
                     () => this._client.skipTrack(),
                     this._skipDelay
                 );
+            } else {
+                clearTimeout(this._skipTask);
+                this._skipTask = null;
             }
         });
         this._client.on('track-changed', () => {
             clearTimeout(this._skipTask);
+            this._skipTask = null;
             this._woots.clear();
             this._mehs.clear();
             this._neutrals.clear();
