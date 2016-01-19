@@ -17,12 +17,12 @@
                 <td><a href="{{ play.url }}">{{ play.title }}</a></td>
                 <td>{{ play.totalPlays }}</td>
                 <td>
-                    <a href="/users/{{ play.dj }}">
+                    <a href="/plays?user={{ play.dj }}">
                         {{ play.dj }}
                     </a>
                 </td>
                 <td>
-                    <a href="/users/{{ play.previousDj }}">
+                    <a href="/plays?user={{ play.previousDj }}">
                         {{ play.previousDj }}
                     </a>
                 </td>

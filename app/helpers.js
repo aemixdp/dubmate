@@ -4,11 +4,11 @@ import paginate from 'express-paginate';
 import extend from 'util-extend';
 import config from '../config/config.js';
 
-function paginatedListView ({view, model, paginationOptions, renderOptions}) {
+function paginatedListView ({view, model, query, paginationOptions, renderOptions}) {
     return (req, res, next) => {
         paginationOptions.page = req.query.page;
         paginationOptions.limit = req.query.limit;
-        model.paginate({}, paginationOptions, (err, result) => {
+        model.paginate(query || {}, paginationOptions, (err, result) => {
             if (err) return next(err);
             var href = paginate.href(req);
             extend(renderOptions, {

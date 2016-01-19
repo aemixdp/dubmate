@@ -12,7 +12,11 @@
         </tr>
         {% for message in model %}
             <tr>
-                <td>{{ message.username }}</td>
+                <td>
+                    <a href="/messages?user={{ message.username }}">
+                        {{ message.username }}
+                    </a>
+                </td>
                 <td>{{ message.message }}</td>
                 <td data-datetime="{{ message.date.getTime() }}"></td>
             </tr>

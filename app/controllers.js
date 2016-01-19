@@ -9,21 +9,35 @@ const home = {
 };
 
 const plays = {
-    list: helpers.paginatedListView({
-        view: 'plays',
-        model: Play,
-        paginationOptions: { sort: { date: -1 } },
-        renderOptions: { route: 'plays' }
-    })
+    list: (req, res, next) => {
+        var query = {};
+        if (req.query.user) {
+            query.username = req.query.user;
+        }
+        helpers.paginatedListView({
+            view: 'plays',
+            model: Play,
+            query,
+            paginationOptions: { sort: { date: -1 } },
+            renderOptions: { route: 'plays' }
+        })(req, res, next);
+    }
 };
 
 const messages = {
-    list: helpers.paginatedListView({
-        view: 'messages',
-        model: Message,
-        paginationOptions: { sort: { date: -1 } },
-        renderOptions: { route: 'messages' }
-    })
+    list: (req, res, next) => {
+        var query = {};
+        if (req.query.user) {
+            query.username = req.query.user;
+        }
+        helpers.paginatedListView({
+            view: 'messages',
+            model: Message,
+            query,
+            paginationOptions: { sort: { date: -1 } },
+            renderOptions: { route: 'messages' }
+        })(req, res, next);
+    }
 };
 
 const users = {
