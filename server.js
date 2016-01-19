@@ -21,6 +21,7 @@ import ChatCommands from './app/plugins/ChatCommands';
 import ChatStopWords from './app/plugins/ChatStopWords';
 import StatsCollector from './app/plugins/StatsCollector';
 import SkipLongTracks from './app/plugins/SkipLongTracks';
+import VoteBasedSkip from './app/plugins/VoteBasedSkip';
 
 const dubtrackClient = new DubtrackClient({
     username: config.dubtrack.username,
@@ -115,6 +116,12 @@ const skipLongTracksPlugin = new SkipLongTracks({
     maxDurationAllowed: config.maxTrackDurationAllowed
 });
 
+const voteBasedSkip = new VoteBasedSkip({
+    client: dubtrackClient,
+    skipDelay: config.voteBasedSkipDelay,
+    formula: config.voteBasedSkipFormula
+});
+
 chatCommandsPlugin.on('error', console.error);
 chatStopWordsPlugin.on('error', console.error);
 statsCollectorPlugin.on('error', console.error);
@@ -123,3 +130,4 @@ chatCommandsPlugin.run();
 chatStopWordsPlugin.run();
 statsCollectorPlugin.run();
 skipLongTracksPlugin.run();
+voteBasedSkip.run();

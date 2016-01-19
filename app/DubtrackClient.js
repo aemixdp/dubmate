@@ -21,6 +21,12 @@ class DubtrackClient extends events.EventEmitter {
             dubapi.on('connected', () => this.emit('connected'));
             dubapi.on('disconnected', () => this.emit('disconnected'));
             dubapi.on('error', (err) => this.emit('error', err));
+            dubapi.on('room_playlist-dub', (data) => {
+                this.emit('vote', {
+                    username: data.user.username,
+                    type: data.dubtype
+                });
+            });
             dubapi.on(dubapi.events.chatMessage, (data) => {
                 this.emit('chat-message', {
                     username: data.user.username,
@@ -58,6 +64,9 @@ class DubtrackClient extends events.EventEmitter {
             originType: media.type,
             originId: media.fkid
         };
+    }
+    getUsers () {
+        return this._dubapi.getUsers();
     }
     deleteChatMessage (messageId) {
         this._dubapi.moderateDeleteChat(messageId);
