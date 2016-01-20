@@ -69,6 +69,9 @@ class DubtrackClient extends events.EventEmitter {
     getUsers () {
         return this._dubapi.getUsers();
     }
+    getQueue () {
+        return this._dubapi.getQueue();
+    }
     deleteChatMessage (messageId) {
         this._dubapi.moderateDeleteChat(messageId);
     }

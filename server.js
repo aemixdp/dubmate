@@ -113,7 +113,8 @@ const statsCollectorPlugin = new StatsCollector({
 
 const skipLongTracksPlugin = new SkipLongTracks({
     client: dubtrackClient,
-    maxDurationAllowed: config.maxTrackDurationAllowed
+    maxDurationAllowed: config.maxTrackDurationAllowed,
+    maxQueueSize: config.maxLongplayQueueAllowed
 });
 
 const voteBasedSkip = new VoteBasedSkip({
