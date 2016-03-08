@@ -111,17 +111,17 @@ const statsCollectorPlugin = new StatsCollector({
     tracktools: tracktools
 });
 
-const skipLongTracksPlugin = new SkipLongTracks({
-    client: dubtrackClient,
-    maxDurationAllowed: config.maxTrackDurationAllowed,
-    maxQueueSize: config.maxLongplayQueueAllowed
-});
+// const skipLongTracksPlugin = new SkipLongTracks({
+//     client: dubtrackClient,
+//     maxDurationAllowed: config.maxTrackDurationAllowed,
+//     maxQueueSize: config.maxLongplayQueueAllowed
+// });
 
-const voteBasedSkip = new VoteBasedSkip({
-    client: dubtrackClient,
-    skipDelay: config.voteBasedSkipDelay,
-    formula: config.voteBasedSkipFormula
-});
+// const voteBasedSkip = new VoteBasedSkip({
+//     client: dubtrackClient,
+//     skipDelay: config.voteBasedSkipDelay,
+//     formula: config.voteBasedSkipFormula
+// });
 
 chatCommandsPlugin.on('error', console.error);
 chatStopWordsPlugin.on('error', console.error);
@@ -130,5 +130,5 @@ statsCollectorPlugin.on('error', console.error);
 chatCommandsPlugin.run();
 chatStopWordsPlugin.run();
 statsCollectorPlugin.run();
-skipLongTracksPlugin.run();
-voteBasedSkip.run();
+// skipLongTracksPlugin.run();
+// voteBasedSkip.run();

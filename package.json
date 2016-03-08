@@ -2,14 +2,14 @@
   "name": "dubmate",
   "version": "1.0.0",
   "description": "",
-  "main": " --harmony loader.js",
+  "main": " --harmony server.js",
   "scripts": {
-    "start": "node --harmony .\\loader.js",
+    "start": "node --harmony server.js",
     "test": ".\\node_modules\\.bin\\mocha --compilers js:babel-core/register",
     "transpile": "npm run transpile-app && npm run transpile-server && npm run transpile-config",
-    "transpile-app": ".\\node_modules\\.bin\\babel app --out-dir ..\\dubmate-2ch\\app",
-    "transpile-server": ".\\node_modules\\.bin\\babel server.js --out-dir ..\\dubmate-2ch",
-    "transpile-config": ".\\node_modules\\.bin\\babel config --out-dir ..\\dubmate-2ch\\config"
+    "transpile-app": ".\\node_modules\\.bin\\babel app --out-dir ../hyperdubz/app",
+    "transpile-server": ".\\node_modules\\.bin\\babel server.js --out-dir ../hyperdubz",
+    "transpile-config": ".\\node_modules\\.bin\\babel config --out-dir ../hyperdubz/config"
   },
   "author": "aemxdp <aemxdp@gmail.com>",
   "license": "ISC",
